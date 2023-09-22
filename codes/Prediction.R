@@ -1,3 +1,4 @@
+library(PrevMap)
 
 # Extract parameters from geostatistical model
 fit.MCML.1 <- readRDS(".\\outputs\\fit.MCML.1.rds")
@@ -17,7 +18,7 @@ sigma2 <- 7.9635e+00 # variance of the Gaussian process
 phi    <- 1.7982e+05 # scale of the spatial correlation
 tau2   <- 7.0857e-01 # variance of the nugget effect
 #coords<- jitter2d(data[,c("long","lat")],max=100)
-coords <- baseline.jits
+coords <- baseline.jits[,c("long","lat")]
 object <- fit.MCML.1 
 n <- length(object$y)
 
@@ -26,7 +27,7 @@ U<- as.matrix(dist(coords))
 Sigma.obs <- sigma2*exp(-U/phi) 
 
 diag(Sigma.obs) <- diag(Sigma.obs)+tau2
-Sigma.obs.inv <- solve(Sigma.obs.inv)
+Sigma.obs.inv <- solve(Sigma.obs)
 
 
 # covariance matrix of the grid locations
@@ -40,7 +41,7 @@ C <- sigma2*exp(-U.grid.obs/phi) # cross-correlation
 
 #S.samples
 object$mu <- object$D %*% beta
-
+mcmc.1 <- control.mcmc.MCML(n.sim=50000,burnin=5000,thin=45,h=(1.65)/(nrow(D)^(1/6)))
 
 S.samples <- Laplace.sampling(object$mu, Sigma.obs, object$y, 
                               object$units.m, 
@@ -51,20 +52,13 @@ S.samples <- Laplace.sampling(object$mu, Sigma.obs, object$y,
 # conditional mean
 n.sim <- 1000 # number of simulations
 S.obs <- S.samples$samples
-S.obs <-S.sim.res$samples
+#S.obs <-S.sim.res$samples
 
+# conditional mean at prediction locations
 cond.mean <- sapply(1:n.sim, function(i) C%*%Sigma.obs.inv%*%(S.obs[i,]))
 
 # conditional covariance
 Sigma.cond <- t(chol(Sigma.pred-C%*%Sigma.obs.inv%*%t(C)))
-
-
-C <- sigma2 * exp(- U.pred.coords / phi)
-A <- C %*% Sigma.inv
-
-mu.cond <- mu.pred + A %*% (t(S.sim) - as.numeric(object$mu))
-sd.cond <- sqrt(sigma2 - rowSums(A * C))
-
 
 S.pred.samples <- sapply(1:n.sim, function(i) cond.mean[,i]+
                            Sigma.cond%*%rnorm(nrow(st_coordinates(grid.pred))))
