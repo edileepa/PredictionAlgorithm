@@ -1,4 +1,4 @@
-#import map
+#import map 
 library(sf)
 #map <-st_read(file.choose())
 #map<- map[map$ADM0_NAME %in% c("Rwanda","Uganda","United Republic of Tanzania","Burundi","Democratic Republic of the Congo"), ]
@@ -13,8 +13,6 @@ st_coordinates(map)
 map<- st_transform(map,3857)
 st_coordinates(map)
 plot(st_geometry(map))
-
-
 
 #prediction grid
 grid.pred <- st_make_grid(map,n=c(50,50),crs=3857,what="centers")
@@ -62,5 +60,6 @@ baseline.jits
 
 cbind(data[,3:4],baseline.jits)
 #write.csv(baseline.jits,".\\outputs\\baseline.jits.csv")
+
 
 
