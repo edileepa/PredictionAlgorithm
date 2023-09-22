@@ -81,7 +81,7 @@ r
 
 #predicted prevalence at a far away place is much higher than 1/(1+exp(-beta))
 points(2357592,-511841,col="red",pch=16)
-extract(r,data.frame(x=2357592,y=-511841)) #0.5021257
+extract(r,data.frame(x=2357592,y=-511841)) #0.5227119
 
 
 
