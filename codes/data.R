@@ -30,8 +30,6 @@ plot(st_geometry(map), add=T)
 dim(st_coordinates(grid.pred)) 
 
 
-
-
 #import prevalence data
 
 data <- read.csv(".\\raw_data\\data.csv")

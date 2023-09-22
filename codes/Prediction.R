@@ -1,7 +1,7 @@
 library(PrevMap)
 
 # Extract parameters from geostatistical model
-fit.MCML.1 <- readRDS(".\\outputs\\fit.MCML.1.rds")
+fit.MCML.1 <- readRDS("./outputs/fit.MCML.1.rds")
 print(summary(fit.MCML.1,log.cov.pars=FALSE))
 #           Estimate StdErr
 # sigma^2 7.9635e+00 0.1177
@@ -9,7 +9,7 @@ print(summary(fit.MCML.1,log.cov.pars=FALSE))
 # tau^2   7.0857e-01 1.4707
 
 #import jittered coords
-baseline.jits <- read.csv(".\\outputs\\baseline.jits.csv")
+baseline.jits <- read.csv("./outputs/baseline.jits.csv")
 
 
 #Par estimates: 
@@ -31,7 +31,11 @@ Sigma.obs.inv <- solve(Sigma.obs)
 
 
 # covariance matrix of the grid locations
+<<<<<<< HEAD
 grid.pred <- read.csv(".\\outputs\\grid.pred.csv")
+=======
+library(sf)
+>>>>>>> 6b88e1b07b48df464b762d2b76a53a5d40050e25
 U.grid.pred <- as.matrix(dist(st_coordinates(grid.pred))) 
 Sigma.pred <- sigma2*exp(-U.grid.pred/phi) 
 
