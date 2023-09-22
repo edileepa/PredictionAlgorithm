@@ -31,11 +31,8 @@ Sigma.obs.inv <- solve(Sigma.obs)
 
 
 # covariance matrix of the grid locations
-<<<<<<< HEAD
-grid.pred <- read.csv(".\\outputs\\grid.pred.csv")
-=======
 library(sf)
->>>>>>> 6b88e1b07b48df464b762d2b76a53a5d40050e25
+grid.pred <- read.csv(".\\outputs\\grid.pred.csv")
 U.grid.pred <- as.matrix(dist(st_coordinates(grid.pred))) 
 Sigma.pred <- sigma2*exp(-U.grid.pred/phi) 
 
