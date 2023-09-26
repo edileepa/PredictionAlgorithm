@@ -107,13 +107,13 @@ writeRaster(r.prevmap, ".\\figures\\Prediction_from_PrevMap.tif")
 r.prevmap
 
 par(mfrow=c(1,3))
-plot(r,main="Prediction algorith")
+plot(r,main="Prediction algorithm")
 plot(st_geometry(map),add=T)
 
 plot(r.prevmap,main="PrevMap")
 plot(st_geometry(map),add=T)
 
-plot(r-r.prevmap,main="Difference")
+plot(r-r.prevmap,main="Difference between\nPrediction algorithm and PrevMap")
 plot(st_geometry(map),add=T)
 
 
