@@ -1,4 +1,5 @@
 library(PrevMap)
+library(sf)
 
 # Extract parameters from geostatistical model
 fit.MCML.1 <- readRDS("./outputs/fit.MCML.1.rds")
@@ -73,7 +74,7 @@ prev.samples <- exp(S.pred.samples)/(1+exp(S.pred.samples))
 r<- rasterFromXYZ(cbind(st_coordinates(grid.pred), apply(prev.samples,1,mean)))
 plot(r)
 plot(st_geometry(map),add=T)
-
+writeRaster(r, ".\\figures\\Prediction_from_algorithm.tif")
 
 r
 
@@ -88,9 +89,32 @@ extract(r,data.frame(x=2357592,y=-511841)) #0.5227119
 
 
 
+#Prediction with PrevMap
+?spatial.pred.binomial.MCML
+
+pred.MCML <- spatial.pred.binomial.MCML(fit.MCML.1 ,
+                                        grid.pred = st_coordinates(grid.pred),
+                                        control.mcmc=mcmc.1,
+                                        scale.predictions = "prevalence")
 
 
 
+r.prevmap<- rasterFromXYZ(cbind(st_coordinates(grid.pred), pred.MCML$prevalence$predictions ))
+plot(r.prevmap)
+plot(st_geometry(map),add=T)
+writeRaster(r.prevmap, ".\\figures\\Prediction_from_PrevMap.tif")
+
+r.prevmap
+
+par(mfrow=c(1,3))
+plot(r,main="Prediction algorith")
+plot(st_geometry(map),add=T)
+
+plot(r.prevmap,main="PrevMap")
+plot(st_geometry(map),add=T)
+
+plot(r-r.prevmap,main="Difference")
+plot(st_geometry(map),add=T)
 
 
 
