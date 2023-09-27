@@ -108,7 +108,7 @@ extract(r,data.frame(x=2357592,y=-511841)) #0.5227119
 
 #Prediction with PrevMap
 ?spatial.pred.binomial.MCML
-
+library(geoR)
 pred.MCML <- spatial.pred.binomial.MCML(fit.MCML.1 ,
                                         #grid.pred = st_coordinates(grid.pred),
                                         grid.pred = grid.pred,
