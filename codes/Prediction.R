@@ -1,3 +1,5 @@
+rm(list = ls())
+
 library(PrevMap)
 library(sf)
 
@@ -32,7 +34,7 @@ Sigma.obs.inv <- solve(Sigma.obs)
 
 
 # covariance matrix of the grid locations
-library(sf)
+#library(sf)
 grid.pred <- read.csv("./outputs/grid.pred.csv")
 head(grid.pred)
 grid.pred<-grid.pred[,2:3]
@@ -83,6 +85,11 @@ prev.samples <- exp(S.pred.samples)/(1+exp(S.pred.samples))
 #r<- rasterFromXYZ(cbind(st_coordinates(grid.pred), apply(prev.samples,1,mean)))
 r<- rasterFromXYZ(cbind(grid.pred, apply(prev.samples,1,mean)))
 plot(r)
+
+library(sf)
+map<-st_read(".\\raw_data\\map.shp")
+map<- st_transform(map,3857)
+
 plot(st_geometry(map),add=T)
 writeRaster(r, ".\\figures\\Prediction_from_algorithm.tif")
 
@@ -103,13 +110,15 @@ extract(r,data.frame(x=2357592,y=-511841)) #0.5227119
 ?spatial.pred.binomial.MCML
 
 pred.MCML <- spatial.pred.binomial.MCML(fit.MCML.1 ,
-                                        grid.pred = st_coordinates(grid.pred),
+                                        #grid.pred = st_coordinates(grid.pred),
+                                        grid.pred = grid.pred,
                                         control.mcmc=mcmc.1,
                                         scale.predictions = "prevalence")
 
 
 
-r.prevmap<- rasterFromXYZ(cbind(st_coordinates(grid.pred), pred.MCML$prevalence$predictions ))
+#r.prevmap<- rasterFromXYZ(cbind(st_coordinates(grid.pred), pred.MCML$prevalence$predictions ))
+r.prevmap<- rasterFromXYZ(cbind(grid.pred, pred.MCML$prevalence$predictions ))
 plot(r.prevmap)
 plot(st_geometry(map),add=T)
 writeRaster(r.prevmap, ".\\figures\\Prediction_from_PrevMap.tif")
