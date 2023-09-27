@@ -28,7 +28,7 @@ plot(grid.pred)
 plot(st_geometry(map), add=T)
 
 dim(st_coordinates(grid.pred)) 
-write.csv(grid.pred,".\\outputs\\grid.pred.csv")
+write.csv(st_coordinates(grid.pred),".\\outputs\\grid.pred.csv")
 
 #import prevalence data
 
