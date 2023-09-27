@@ -65,7 +65,7 @@ S.obs <- S.samples$samples
 #S.obs <-S.sim.res$samples
 
 # conditional mean at prediction locations
-cond.mean <- sapply(1:n.sim, function(i) C%*%Sigma.obs.inv%*%(S.obs[i,]))
+cond.mean <- sapply(1:n.sim, function(i) beta+C%*%Sigma.obs.inv%*%(S.obs[i,]-object$mu))
 
 
 
