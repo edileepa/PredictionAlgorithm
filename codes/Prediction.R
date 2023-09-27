@@ -34,11 +34,16 @@ Sigma.obs.inv <- solve(Sigma.obs)
 # covariance matrix of the grid locations
 library(sf)
 grid.pred <- read.csv("./outputs/grid.pred.csv")
-U.grid.pred <- as.matrix(dist(st_coordinates(grid.pred))) 
+head(grid.pred)
+grid.pred<-grid.pred[,2:3]
+
+#U.grid.pred <- as.matrix(dist(st_coordinates(grid.pred))) 
+U.grid.pred <- as.matrix(dist(grid.pred)) 
 Sigma.pred <- sigma2*exp(-U.grid.pred/phi) 
 
 #Cross correlation 
-U.grid.obs <- as.matrix(pdist(st_coordinates(grid.pred), coords))
+#U.grid.obs <- as.matrix(pdist(st_coordinates(grid.pred), coords))
+U.grid.obs <- as.matrix(pdist(grid.pred, coords))
 C <- sigma2*exp(-U.grid.obs/phi) # cross-correlation
 
 
@@ -60,18 +65,23 @@ S.obs <- S.samples$samples
 # conditional mean at prediction locations
 cond.mean <- sapply(1:n.sim, function(i) C%*%Sigma.obs.inv%*%(S.obs[i,]))
 
+
+
 # conditional covariance
 Sigma.cond <- t(chol(Sigma.pred-C%*%Sigma.obs.inv%*%t(C)))
 
+# S.pred.samples <- sapply(1:n.sim, function(i) cond.mean[,i]+
+#                            Sigma.cond%*%rnorm(nrow(st_coordinates(grid.pred))))
 S.pred.samples <- sapply(1:n.sim, function(i) cond.mean[,i]+
-                           Sigma.cond%*%rnorm(nrow(st_coordinates(grid.pred))))
+                           Sigma.cond%*%rnorm(nrow(grid.pred)))
 
 # prevalence samples on the grid
 #prev.samples <- exp(beta_new+S.pred.samples)/(1+exp(beta.new+S.pred.samples))
 prev.samples <- exp(S.pred.samples)/(1+exp(S.pred.samples))
 
 
-r<- rasterFromXYZ(cbind(st_coordinates(grid.pred), apply(prev.samples,1,mean)))
+#r<- rasterFromXYZ(cbind(st_coordinates(grid.pred), apply(prev.samples,1,mean)))
+r<- rasterFromXYZ(cbind(grid.pred, apply(prev.samples,1,mean)))
 plot(r)
 plot(st_geometry(map),add=T)
 writeRaster(r, ".\\figures\\Prediction_from_algorithm.tif")
