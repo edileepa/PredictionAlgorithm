@@ -1,2 +1,2 @@
 # PredictionAlgorithm
-Extrapolating irevalence mapping (predicting outside survey locations) 
+Extrapolating prevalence mapping (predicting outside survey locations) 
